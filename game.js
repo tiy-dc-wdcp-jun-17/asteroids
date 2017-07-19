@@ -1,12 +1,12 @@
 (function gameSetup() {
     'use strict';
 
-    var shipElem = document.getElementById('ship');
+    let shipElem = document.getElementById('ship');
 
     // Create your "ship" object and any other variables you might need...
 
 
-    var allAsteroids = [];
+    let allAsteroids = [];
     shipElem.addEventListener('asteroidDetected', function (event) {
         // You can detect when a new asteroid appears with this event.
         // The new asteroid's HTML element will be in:  event.detail
@@ -48,7 +48,7 @@
         // NOTE: you will need to change these arguments to match your ship object!
         // What does this function return? What will be in the `move` variable?
         // Read the documentation!
-        var move = getShipMovement(shipsCurrentVelocity, shipsCurrentAngle);
+        let move = getShipMovement(shipsCurrentVelocity, shipsCurrentAngle);
 
 
         // Move the ship here!
@@ -99,7 +99,7 @@
      *                   !!! DO NOT EDIT BELOW HERE !!!
      ** ************************************************************************/
 
-     var loopHandle = setInterval(gameLoop, 20);
+     let loopHandle = setInterval(gameLoop, 20);
 
      /**
       * Executes the code required when a crash has occurred. You should call
@@ -114,7 +114,7 @@
         asteroidHit.classList.add('hit');
         document.querySelector('#ship').classList.add('crash');
 
-        var event = new CustomEvent('crash', { detail: asteroidHit });
+        let event = new CustomEvent('crash', { detail: asteroidHit });
         document.querySelector('main').dispatchEvent(event);
     }
 

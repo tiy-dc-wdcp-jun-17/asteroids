@@ -6,12 +6,16 @@
   // Create your "ship" object and any other variables you might need...
   const ship = {
     el: shipElem,
-    velocity: 0,
+    angle: 0,
+    applyForceAtNextTick: false,
     position: {
       top: window.innerHeight / 2,
       left: window.innerWidth / 2
     },
-    angle: 0
+    momentum: {
+      angle: 0,
+      velocity: 0
+    }
   };
 
   let allAsteroids = [];
@@ -43,14 +47,13 @@
         ship.angle += 10;
         break;
       case 38:
-        ship.velocity += 2;
-        break;
-      case 40:
-        ship.velocity -= 2;
+        // ship.velocity += 2;
+        ship.applyForceAtNextTick = true;
+        // updateShipPosition(3);
         break;
     }
 
-    console.log("ship", ship);
+    console.log("ship", ship.momentum);
   }
   document.querySelector("body").addEventListener("keyup", handleKeys);
 
@@ -75,7 +78,7 @@
     ship.el.style.transform = `rotate(${ship.angle}deg)`;
 
     // Time to check for any collisions (see below)...
-    checkForCollisions();
+    // checkForCollisions();
   }
 
   /**
@@ -96,7 +99,7 @@
     let shipBounding = ship.el.getBoundingClientRect();
     allAsteroids.forEach(function(asteroid) {
       let asteroidBoundingBox = asteroid.getBoundingClientRect();
-      
+
       let overlap = !(
         shipBounding.right < asteroidBoundingBox.left ||
         shipBounding.left > asteroidBoundingBox.right ||
@@ -111,31 +114,32 @@
   }
 
   function updateShipPosition() {
-    let move = getShipMovement(ship.velocity, ship.angle);
+    let speed = 0;
+    if (ship.applyForceAtNextTick) {
+        speed = 3;
+        ship.applyForceAtNextTick = false;
+    }
+    let newPoint = getShipMovement(speed, ship.angle);
+    let oldPoint = getShipMovement(ship.momentum.velocity, ship.momentum.angle);
+
+    let move = { top: newPoint.top + oldPoint.top, left: newPoint.left + oldPoint.left };
+
+    ship.momentum.angle = Math.atan2(move.top - ship.position.top, move.left - ship.position.left) * 180 / Math.PI;
+    ship.momentum.velocity += force; // This is wrong
+
     let bottomEdge = window.innerHeight;
     let rightEdge = window.innerWidth;
 
     if (ship.position.left > rightEdge) {
       ship.position.left = 0;
-    } else {
-      ship.position.left += move.left;
-    }
-
-    if (ship.position.top > bottomEdge) {
+    } else if (ship.position.top > bottomEdge) {
       ship.position.top = 0;
-    } else {
-      ship.position.top += move.top;
-    }
-
-    if (ship.position.left < 0) {
+    } else if (ship.position.left < 0) {
       ship.position.left = rightEdge;
-    } else {
-      ship.position.left += move.left;
-    }
-
-    if (ship.position.top < 0) {
+    } else if (ship.position.top < 0) {
       ship.position.top = bottomEdge;
     } else {
+      ship.position.left += move.left;
       ship.position.top += move.top;
     }
   }
@@ -147,7 +151,7 @@
      */
   document.querySelector("main").addEventListener("crash", function() {
     console.log("A crash occurred!");
-    clearInterval(loopHandle)
+    clearInterval(loopHandle);
     // What might you need/want to do in here?
   });
 

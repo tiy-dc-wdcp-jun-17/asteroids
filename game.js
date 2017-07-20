@@ -70,7 +70,7 @@
      * A bounding box is an object with top, left, width, and height properties
      * that you can use to detect whether one box is on top of another.
      *
-     * @return void
+     * @return {void}
      */
     function checkForCollisions() {
 
@@ -82,7 +82,7 @@
     /**
      * This event handler will execute when a crash occurs
      *
-     * return {void}
+     * @return {void}
      */
     document.querySelector('main').addEventListener('crash', function () {
         console.log('A crash occurred!');
